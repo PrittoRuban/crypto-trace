@@ -1,14 +1,18 @@
 import { verifyToken } from "../lib/jwt";
 
 export const authenticate = (handler) => async (req, res) => {
-  const token = req.headers.authorization?.split(" ")[1];
+  const token = req.headers.get("Authorization")?.split(" ")[1];
   if (!token) {
-    return res.status(401).json({ message: "Unauthorized" });
+    return new Response(JSON.stringify({ message: "Unauthorized" }), {
+      status: 401,
+    });
   }
 
   const user = verifyToken(token);
   if (!user) {
-    return res.status(401).json({ message: "Unauthorized" });
+    return new Response(JSON.stringify({ message: "Unauthorized" }), {
+      status: 401,
+    });
   }
 
   req.user = user;
